@@ -59,7 +59,8 @@
 
     dispatch_block_t handleOpenUrl = ^(void) {
         // calls into javascript global function 'handleOpenURL'
-        NSString* jsString = [NSString stringWithFormat:@"document.addEventListener('deviceready',function(){if (typeof handleOpenURL === 'function') { handleOpenURL(\"%@\");}});", url.absoluteString];
+        // Re: window._savedOpenURL, see https://github.com/EddyVerbruggen/Custom-URL-scheme/issues/2#issuecomment-152557017
+        NSString* jsString = [NSString stringWithFormat:@"if (typeof handleOpenURL === 'function') { handleOpenURL(\"%@\");} else { window._savedOpenURL = \"%@\"; }", url.absoluteString, url.absoluteString];
 
         [weakSelf.webViewEngine evaluateJavaScript:jsString completionHandler:nil];
     };
